@@ -1,0 +1,231 @@
+Bola bola;  
+Barra barraIzq;
+Barra barraDer;
+
+int scoreIzq = 0;
+int scoreDer = 0;
+PFont font;
+PFont date;
+PFont team;
+PFont tecla;
+int a=0;
+
+void setup(){
+  size(800,600);
+  bola = new Bola(width/2, height/2, 50); 
+  bola.velocidadX = 5; 
+  bola.velocidadY = random(-3,3);
+  
+  barraIzq = new Barra(15, height/2, 30,200);
+  barraDer = new Barra(width-15, height/2, 30,200);
+
+}
+
+void draw(){
+  background(0); 
+      font = loadFont("MaturaMTScriptCapitals-48.vlw");
+      textFont(font, 80);
+      text("PONG", 335, 210);
+      
+      date = loadFont("MingLiU-ExtB-48.vlw");
+      textFont(date, 32);
+      text("V 1.0.0", 372, 260);
+      
+      team = loadFont("MingLiU-ExtB-48.vlw");
+      textFont(team, 32);
+      text("Antonio Silva, Alan Mondragón", 250, 290); 
+      
+      tecla = loadFont("MingLiU-ExtB-48.vlw");
+      textFont(team, 32);
+      text("Presiona f para continuar", 270, 350); 
+      
+  if(a == 1){
+  background(0);
+   bola.display(); 
+  bola.posicion(); 
+  bola.display(); 
+  
+  barraIzq.posicion();
+  barraIzq.display();
+  barraDer.posicion();
+  barraDer.display();
+
+  
+  if (bola.derecha() > width) {
+    scoreIzq = scoreIzq + 1;
+    bola.x = width/2;
+    bola.y = height/2;
+  }
+  if (bola.izquierda() < 0) {
+    scoreDer = scoreDer + 1;
+    bola.x = width/2;
+    bola.y = height/2;
+  }
+
+  if (bola.bottom() > height) {
+    bola.velocidadY = -bola.velocidadY;
+  }
+
+  if (bola.top() < 0) {
+    bola.velocidadY = -bola.velocidadY;
+  }
+  
+  if (barraIzq.bottom() > height) {
+    barraIzq.y = height-barraIzq.h/2;
+  }
+
+  if (barraIzq.top() < 0) {
+    barraIzq.y = barraIzq.h/2;
+  }
+    
+  if (barraDer.bottom() > height) {
+    barraDer.y = height-barraDer.h/2;
+  }
+
+  if (barraDer.top() < 0) {
+    barraDer.y = barraDer.h/2;
+  }
+
+  if ( bola.izquierda() < barraIzq.derecha() && bola.y > barraIzq.top() && bola.y < barraIzq.bottom()){
+    bola.velocidadX = -bola.velocidadX;
+    bola.velocidadY = map(bola.y - barraIzq.y, -barraIzq.h/2, barraIzq.h/2, -10, 10);
+  }
+
+  if ( bola.derecha() > barraDer.izquierda() && bola.y > barraDer.top() && bola.y < barraDer.bottom()) {
+    bola.velocidadX = -bola.velocidadX;
+    bola.velocidadY = map(bola.y - barraDer.y, -barraDer.h/2, barraDer.h/2, -10, 10);
+  }
+  
+  
+  textSize(40);
+  textAlign(CENTER);
+  text(scoreDer, width/2+30, 30); 
+  text(scoreIzq, width/2-30, 30); 
+  }
+  else if(key == 'f'){
+    a=+1;
+  }
+}
+
+void keyPressed(){
+  if(keyCode == UP){
+    barraDer.velocidadY=-3;
+  }
+  if(keyCode == DOWN){
+    barraDer.velocidadY=3;
+  }
+  if(key == 'w'||key == 'W'){
+    barraIzq.velocidadY=-3;
+  }
+  if(key == 's'||key == 'S'){
+    barraIzq.velocidadY=3;
+  }
+}
+
+void keyReleased(){
+  if(keyCode == UP){
+    barraDer.velocidadY=0;
+  }
+  if(keyCode == DOWN){
+    barraDer.velocidadY=0;
+  }
+  if(key == 'w'||key == 'W'){
+    barraIzq.velocidadY=0;
+  }
+  if(key == 's'||key == 'S'){
+    barraIzq.velocidadY=0;
+  }
+}
+
+
+class Bola {
+  float x;
+  float y;
+  float velocidadX;
+  float velocidadY;
+  float diametro;
+  color c;
+  
+
+  Bola(float tempX, float tempY, float tempDiameter) {
+    x = tempX;
+    y = tempY;
+    diametro = tempDiameter;
+    velocidadX = 0;
+    velocidadY = 0;
+    c = (225); 
+  }
+  
+  void posicion() {
+    y = y + velocidadY;
+    x = x + velocidadX;
+  }
+  
+  void display() {
+    fill(c);
+    ellipse(x,y,diametro,diametro); 
+  }
+  
+ 
+  float izquierda(){
+    return x-diametro/2;
+  }
+  float derecha(){
+    return x+diametro/2;
+  }
+  float top(){
+    return y-diametro/2;
+  }
+  float bottom(){
+    return y+diametro/2;
+  }
+
+}
+
+
+
+
+class Barra{
+
+  float x;
+  float y;
+  float w;
+  float h;
+  float velocidadY;
+  float velocidadX;
+  color c;
+  
+  Barra(float tempX, float tempY, float tempW, float tempH){
+    x = tempX;
+    y = tempY;
+    w = tempW;
+    h = tempH;
+    velocidadY = 0;
+    velocidadX = 0;
+    c=(255);
+  }
+
+  void posicion(){
+    y += velocidadY;
+    x += velocidadX;
+  }
+
+  void display(){
+    fill(c);
+    rect(x-w/2,y-h/2,w,h);
+  } 
+  
+
+  float izquierda(){
+    return x-w/2;
+  }
+  float derecha(){
+    return x+w/2;
+  }
+  float top(){
+    return y-h/2;
+  }
+  float bottom(){
+    return y+h/2;
+  }
+}
